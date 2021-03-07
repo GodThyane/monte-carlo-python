@@ -1,1 +1,1 @@
-web: gunicorn ApiREST:app
+web: gunicorn ApiREST:app --timeout 120
