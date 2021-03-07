@@ -4,6 +4,7 @@ from scipy.stats import kstwo
 import requests
 
 
+# Retorna si los números ingresados pasan una prueba de medias
 def testMedia(randoms):
     med = media(randoms)
 
@@ -16,6 +17,7 @@ def testMedia(randoms):
     return (med <= ls) & (med >= li);
 
 
+# Retorna si los números ingresados pasan una prueba de varianza
 def testVarianza(randoms):
     n = len(randoms)
     grade_liberty = n - 1
@@ -39,6 +41,7 @@ def testVarianza(randoms):
         return (variance >= ls) & (variance <= li)
 
 
+# Retorna si los números ingresados pasan una prueba de Chi2
 def testChi2(randoms):
     n = len(randoms)
 
@@ -54,6 +57,7 @@ def testChi2(randoms):
     return chi2.ppf(0.95, df=len(hist) - 1) > chiSum
 
 
+# Retorna si los números ingresados pasan una prueba de KS
 def testKS(randoms):
     aceptation = 0.95
     n = len(randoms)
@@ -76,14 +80,17 @@ def testKS(randoms):
     return dmax < dmaxp
 
 
+# Retorna si los números ingresados pasan una prueba de poker
 def testPoker(randoms):
     return requests.post('https://dcb-node-deploy-poker.herokuapp.com/pokertest', json={"listRi": randoms}).json()[
         "isOk"]
 
 
+# Retorna si los números ingresados pasan todas las pruebas
 def testAll(randoms):
     return testMedia(randoms) & testVarianza(randoms) & testChi2(randoms) & testKS(randoms) & testPoker(randoms)
 
 
+# Calcula la media de una lista de números ingresados
 def media(ri):
     return sum(ri) / len(ri)

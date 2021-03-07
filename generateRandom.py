@@ -1,7 +1,7 @@
 import time
 import numpy as np
 
-
+#Genera 'n' números pseudoaleatorios
 def congruenciaLineal(n):
     xn = np.random.random()
     k = 4
