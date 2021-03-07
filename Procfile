@@ -1,0 +1,1 @@
+web: gunicorn ApiREST:app
