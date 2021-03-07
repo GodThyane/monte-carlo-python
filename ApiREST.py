@@ -1,3 +1,6 @@
+import asyncio
+from pdb import main
+
 import numpy as np
 import base64
 from io import BytesIO
@@ -12,6 +15,7 @@ from test import testAll
 # Se inicializa el modulo Flask
 app = Flask(__name__)
 # Se inicializan los CORS para evitar problemas al momento de hacer peticiones al backend
+
 CORS(app, support_credentials=True)
 
 
@@ -24,7 +28,7 @@ def ping():
 
 @app.route('/area', methods=['POST'])
 @cross_origin(supports_credentials=True)
-def getArea():
+async def getArea():
     integral = {
         "func": request.json["func"],
         "max": request.json["max"],
@@ -36,6 +40,10 @@ def getArea():
     return jsonify(res)
 
 
+loop = asyncio.get_event_loop()
+loop.run_until_complete(getArea())
+
+
 def area(f, a, b, N, varint):
     integr = str(integral(f, varint,
                           a, b))
@@ -44,13 +52,16 @@ def area(f, a, b, N, varint):
     }
     if integr != "nan":
         try:
-            resIntegr = requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/resolve', json={"data": data}).json()[
-                "res"]
+            resIntegr = \
+                requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/resolve',
+                              json={"data": data}).json()[
+                    "res"]
         except:
             resIntegr = integr
     else:
-        resIntegr = requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/resolve', json={"data": data}).json()[
-            "res"]
+        resIntegr = \
+            requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/resolve', json={"data": data}).json()[
+                "res"]
 
     if a == b:
         x = np.arange(a - 1, b + 1, 0.1)
@@ -91,7 +102,8 @@ def area(f, a, b, N, varint):
             "func": f,
             "varinc": varint
         }
-        f_x_rand = requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/func', json={"data": data}).json()["y"]
+        f_x_rand = \
+            requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/func', json={"data": data}).json()["y"]
 
         if (f_max >= 0) & (f_min >= 0):
             y_rand = generateRandoms(N) * f_max
