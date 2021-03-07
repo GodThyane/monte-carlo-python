@@ -33,11 +33,11 @@ def getArea():
         "iterations": request.json["n"],
         "varint": request.json["varint"]
     }
-    res = await area(integral["func"], integral["min"], integral["max"], integral["iterations"], integral["varint"])
+    res = area(integral["func"], integral["min"], integral["max"], integral["iterations"], integral["varint"])
     return jsonify(res)
 
 
-async def area(f, a, b, N, varint):
+def area(f, a, b, N, varint):
     integr = str(integral(f, varint,
                           a, b))
     data = {
@@ -45,13 +45,14 @@ async def area(f, a, b, N, varint):
     }
     if integr != "nan":
         try:
-            resIntegr = await requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/resolve',
-                                            json={"data": data}).json()[
-                "res"]
+            resIntegr = \
+                requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/resolve',
+                              json={"data": data}).json()[
+                    "res"]
         except:
             resIntegr = integr
     else:
-        resIntegr = await \
+        resIntegr = \
             requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/resolve', json={"data": data}).json()[
                 "res"]
 
@@ -62,8 +63,7 @@ async def area(f, a, b, N, varint):
             "func": f,
             "varinc": varint
         }
-        y = await \
-            requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/func', json={"data": data}).json()["y"]
+        y = requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/func', json={"data": data}).json()["y"]
         res = 0
         x_rand = None
         y_rand = None
@@ -85,8 +85,7 @@ async def area(f, a, b, N, varint):
             "func": f,
             "varinc": varint
         }
-        y = await \
-            requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/func', json={"data": data}).json()["y"]
+        y = requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/func', json={"data": data}).json()["y"]
         f_max = max(y)
         f_min = min(y)
         randoms = generateRandoms(N)
@@ -96,7 +95,7 @@ async def area(f, a, b, N, varint):
             "func": f,
             "varinc": varint
         }
-        f_x_rand = await \
+        f_x_rand = \
             requests.post('https://gentle-island-67610.herokuapp.com/montecarlo/func', json={"data": data}).json()["y"]
 
         if (f_max >= 0) & (f_min >= 0):
