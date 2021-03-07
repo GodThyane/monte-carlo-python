@@ -1,6 +1,3 @@
-import asyncio
-from pdb import main
-
 import numpy as np
 import base64
 from io import BytesIO
@@ -28,7 +25,7 @@ def ping():
 
 @app.route('/area', methods=['POST'])
 @cross_origin(supports_credentials=True)
-async def getArea():
+def getArea():
     integral = {
         "func": request.json["func"],
         "max": request.json["max"],
@@ -38,10 +35,6 @@ async def getArea():
     }
     res = area(integral["func"], integral["min"], integral["max"], integral["iterations"], integral["varint"])
     return jsonify(res)
-
-
-loop = asyncio.get_event_loop()
-loop.run_until_complete(getArea())
 
 
 def area(f, a, b, N, varint):
